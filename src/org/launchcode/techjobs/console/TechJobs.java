@@ -126,5 +126,4 @@ public class TechJobs {
             System.out.println("No results found");
         }
     }
-}//this is a test
-// 2
+}
