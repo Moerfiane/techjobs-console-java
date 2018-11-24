@@ -7,9 +7,7 @@ import org.apache.commons.csv.CSVRecord;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by LaunchCode testing
@@ -42,7 +40,7 @@ public class JobData {
                 values.add(aValue);
             }
         }
-
+        Collections.sort(values);
         return values;
     }
 
@@ -50,7 +48,8 @@ public class JobData {
 
         // load data, if not already loaded
         loadData();
-
+        // return a copy of all jobs
+        ArrayList allJobsCopy = new ArrayList(allJobs);
         return allJobs;
     }
 
@@ -75,8 +74,8 @@ public class JobData {
         for (HashMap<String, String> row : allJobs) {
 
             String aValue = row.get(column);
-
-            if (aValue.contains(value)) {
+         // make search method case sensitive
+            if (aValue.toLowerCase().contains(value.toLowerCase())) {
                 jobs.add(row);
             }
         }
@@ -87,6 +86,24 @@ public class JobData {
     /**
      * Read in data from a CSV file and store it in a list
      */
+    // Create methods findByValue
+    public static ArrayList<HashMap<String, String>> findByValue(String searchChoice){
+        //lod if not already loaded
+        loadData();
+        ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
+        ArrayList<HashMap<String, String>> term = new ArrayList<>();
+        for (int i = 0; i < allJobs.size(); i++){
+            for (Map.Entry<String, String>job : allJobs.get(i).entrySet()){
+                term.addAll(findByColumnAndValue(job.getKey(), searchChoice));
+            }
+            if (!term.isEmpty()){
+                if (!jobs.containsAll(term)){
+                    jobs.addAll(term);
+                }
+            }
+        }
+        return jobs;
+    }
     private static void loadData() {
 
         // Only load data once
